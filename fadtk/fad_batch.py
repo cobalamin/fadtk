@@ -8,7 +8,7 @@ import torch
 
 from .fad import log, FrechetAudioDistance
 from .model_loader import ModelLoader
-from .utils import get_cache_embedding_path
+from .utils import get_cache_embedding_path, get_audio_files_from_path
 
 
 
@@ -29,7 +29,8 @@ def cache_embedding_files(files: Union[list[Path], str, Path], ml: ModelLoader, 
     :param ml_fn: A function that returns a ModelLoader instance.
     """
     if isinstance(files, (str, Path)):
-        files = list(Path(files).glob('*.*'))
+        files = get_audio_files_from_path(files)
+    orig_n_files = len(files)
 
     # Filter out files that already have embeddings
     files = [f for f in files if not get_cache_embedding_path(ml.name, f).exists()]
@@ -37,7 +38,7 @@ def cache_embedding_files(files: Union[list[Path], str, Path], ml: ModelLoader, 
         log.info("All files already have embeddings, skipping.")
         return
 
-    log.info(f"[Frechet Audio Distance] Loading {len(files)} audio files...")
+    log.info(f"[Frechet Audio Distance] Loading {len(files)} of {orig_n_files} audio files for embedding calculation...")
 
     # Split files into batches
     batches = list(np.array_split(files, workers))

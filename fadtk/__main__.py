@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from .fad import FrechetAudioDistance, log
 from .model_loader import *
 from .fad_batch import cache_embedding_files
+from .utils import get_audio_files_from_path
 
 
 def main():
@@ -44,7 +45,7 @@ def main():
     fad = FrechetAudioDistance(model, audio_load_worker=args.workers, load_model=False)
     if args.inf:
         assert Path(eval).is_dir(), "FAD-inf requires a directory as the evaluation dataset"
-        score = fad.score_inf(baseline, list(Path(eval).glob('*.*')))
+        score = fad.score_inf(baseline, get_audio_files_from_path(Path(eval)))
         print("FAD-inf Information:", score)
         score, inf_r2 = score.score, score.r2
     elif args.indiv:

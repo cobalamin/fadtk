@@ -5,6 +5,7 @@ import pandas as pd
 
 from fadtk.fad import FrechetAudioDistance
 from fadtk.model_loader import get_all_models
+from fadtk.utils import get_audio_files_from_path
 from hypy_utils.logging_utils import setup_logger
 
 log = setup_logger()
@@ -37,7 +38,7 @@ if __name__ == '__main__':
         
         # Cache embedding files
         try:
-            for f in (fp / 'samples').glob('*.*'):
+            for f in get_audio_files_from_path(fp / 'samples'):
                 fad.cache_embedding_file(f)
         except Exception as e:
             traceback.print_exc()

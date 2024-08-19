@@ -10,6 +10,13 @@ from hypy_utils.tqdm_utils import pmap
 PathLike = Union[str, Path]
 
 
+def get_audio_files_from_path(path: PathLike):
+    if not isinstance(path, Path):
+        path = Path(path)
+    audio_files = [Path(str(file)) for file in path.glob('*.*') if file.suffix in ['.wav', '.flac']]
+    return audio_files
+
+
 def _process_file(file: PathLike):
     embd = np.load(file)
     n = embd.shape[0]
